@@ -1,5 +1,4 @@
 pipeline {
-
     agent any
 
     environment {
@@ -8,61 +7,61 @@ pipeline {
 
     stages {
 
-        stage('Checkout'){
-           steps {
-                git credentialsId: 'jenkins-github-https-cred', // Jenkins GitHub Credentials
-                url: 'https://github.com/abunaiim25/agrobd-application.git',
-                branch: 'main'
-           }
+        stage('Checkout App Repo'){
+            steps {
+                git branch: 'main',
+                credentialsId: 'jenkins-github-https-cred',
+                url: 'https://github.com/abunaiim25/agrobd-application.git'
+            }
         }
 
-        stage('Build Docker'){
-            steps{
-                script{
+        stage('Build Docker Image'){
+            steps {
+                script {
                     sh '''
-                    echo 'Buid Docker Image'
+                    echo 'Building Docker Image...'
                     docker build -t mdnaiim/agrobd-app:${BUILD_NUMBER} .
                     '''
                 }
             }
         }
 
-        stage('Push the artifacts'){
-           steps{
-                script{
+        stage('Push Docker Image'){
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-cred',
+                    passwordVariable: 'DOCKER_PASSWORD',
+                    usernameVariable: 'DOCKER_USERNAME')])
+                    {
                     sh '''
-                    echo 'Push to Repo'
+                    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
                     docker push mdnaiim/agrobd-app:${BUILD_NUMBER}
                     '''
                 }
             }
         }
 
-        stage('Checkout K8S manifest SCM'){
+        stage('Checkout K8S Manifest Repo'){
             steps {
-                git credentialsId: 'jenkins-github-https-cred',
-                url: 'https://github.com/abunaiim25/AgroBd-DEPLOYMENT.git',
-                branch: 'main'
+                git branch: 'main',
+                credentialsId: 'jenkins-github-https-cred',
+                url: 'https://github.com/abunaiim25/AgroBd-DEPLOYMENT.git'
             }
         }
 
-        // For updating the K8S manifest file with new image tag and pushing to Repo
-        stage('Update K8S manifest & push to Repo'){
+        stage('Update Manifest & Push'){
             steps {
-                script{
+                script {
                     withCredentials([usernamePassword(
                         credentialsId: 'jenkins-github-https-cred',
                         passwordVariable: 'GIT_PASSWORD',
                         usernameVariable: 'GIT_USERNAME')])
                         {
                         sh '''
-                        cat deployment.yaml
-                        sed -i '' "s/32/${BUILD_NUMBER}/g" deployment.yaml
-                        cat deployment.yaml
+                        sed -i "s/32/${BUILD_NUMBER}/g" deployment.yaml
                         git add deployment.yaml
-                        git commit -m 'Updated the deployment.yaml | Jenkins Pipeline'
-                        git remote -v
-                        git push https://github.com/abunaiim25/AgroBd-DEPLOYMENT.git HEAD:main
+                        git commit -m "Updated image tag to ${BUILD_NUMBER}"
+                        git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/abunaiim25/AgroBd-DEPLOYMENT.git HEAD:main
                         '''
                     }
                 }
