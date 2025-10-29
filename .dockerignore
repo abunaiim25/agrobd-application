@@ -6,5 +6,5 @@ storage
 tests
 *.md
 *.log
-.env
+
 
