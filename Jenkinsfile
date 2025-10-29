@@ -6,6 +6,7 @@ pipeline {
         DOCKER_IMAGE = "mdnaiim/agrobd-app:${BUILD_NUMBER}"
     }
 
+    // pull/copy from git repo
     stages {
         stage('Checkout App Repo') {
             steps {
@@ -41,6 +42,7 @@ pipeline {
             }
         }
 
+        // pull/copy from git repo
         stage('Checkout K8s Manifest Repo') {
             steps {
                 git branch: 'main',
@@ -51,38 +53,20 @@ pipeline {
 
         stage('Update K8s Manifest & Push') {
             steps {
-                // withCredentials([usernamePassword(credentialsId: 'jenkins-github-https-cred')]) {
-                //     script {
-                //         echo "📝 Updating deployment.yaml with new image tag..."
-                //         sh """
-                //         sed -i "s#mdnaiim/agrobd-app:.*#${env.DOCKER_IMAGE}#g" agrobd-app/deployment.yaml
+                withCredentials([usernamePassword(credentialsId: 'jenkins-github-https-cred')]) {
+                    script {
+                        echo "📝 Updating deployment.yaml with new image tag..."
+                        sh """
+                        sed -i "s#mdnaiim/agrobd-app:.*#${env.DOCKER_IMAGE}#g" agrobd-app/deployment.yaml
 
-                //         git config user.email "jenkins@local"
-                //         git config user.name "Jenkins Pipeline"
-                //         git add agrobd-app/deployment.yaml
-                //         git commit -m "Updated deployment.yaml with image tag ${env.IMAGE_TAG}" || echo "No changes to commit"
-                //         git push origin main
-                //         """
-                //     }
-                // }
-
-                    withCredentials([usernamePassword(credentialsId: 'jenkins-github-https-cred',
-                                    usernameVariable: 'GIT_USER',
-                                    passwordVariable: 'GIT_PASS')]) {
-                        script {
-                            echo "📝 Updating deployment.yaml with new image tag..."
-                            sh """
-                            sed -i "s#mdnaiim/agrobd-app:.*#${env.DOCKER_IMAGE}#g" agrobd-app/deployment.yaml
-
-                            git config user.email "jenkins@local"
-                            git config user.name "Jenkins Pipeline"
-                            git add agrobd-app/deployment.yaml
-                            git commit -m "Updated deployment.yaml with image tag ${env.IMAGE_TAG}" || echo "No changes to commit"
-                            git push https://${GIT_USER}:${GIT_PASS}@github.com/abunaiim25/AgroBd-DEPLOYMENT.git main
-                            """
-                        }
+                        git config user.email "jenkins@local"
+                        git config user.name "Jenkins Pipeline"
+                        git add agrobd-app/deployment.yaml
+                        git commit -m "Updated deployment.yaml with image tag ${env.IMAGE_TAG}" || echo "No changes to commit"
+                        git push origin main
+                        """
                     }
-
+                }
             }
         }
     }
