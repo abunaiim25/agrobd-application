@@ -27,11 +27,12 @@ pipeline {
 
         stage('Push Docker Image to DockerHub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-cred')]) {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-cred',
+                                  usernameVariable: 'DOCKERHUB_USER',
+                                  passwordVariable: 'DOCKERHUB_PASS')]) {
                     sh """
                     echo '🔐 Logging in to DockerHub...'
-                    echo "$PASSWORD" | docker login -u "$USERNAME" --password-stdin
-                    echo '🚀 Pushing Image to DockerHub...'
+                    echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
                     docker push ${DOCKER_IMAGE}
                     docker logout
                     """
@@ -48,12 +49,13 @@ pipeline {
             }
         }
 
+        // sed -i "s#mdnaiim/agrobd-app:[0-9]*#${DOCKER_IMAGE}#g" deployment.yaml
         stage('Update K8s Manifest & Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'jenkins-github-https-cred')]) {
                     sh """
                     echo '📝 Updating deployment.yaml with new image tag...'
-                    sed -i "s#mdnaiim/agrobd-app:[0-9]*#${DOCKER_IMAGE}#g" deployment.yaml
+                    sed -i "s#mdnaiim/agrobd-app:.*#${DOCKER_IMAGE}#g" deployment.yaml
 
                     git config user.email "jenkins@local"
                     git config user.name "Jenkins Pipeline"
