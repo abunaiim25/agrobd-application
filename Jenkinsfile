@@ -7,7 +7,7 @@ pipeline {
     }
 
     stages {
-        // clone agrobd-application repo
+        // Pulls project code from Git.
         stage('Checkout App Repo') {
             steps {
                 git branch: 'main',
@@ -40,7 +40,7 @@ pipeline {
             }
         }
 
-        // Clone AgroBd-DEPLOYMENT repo
+        // Pulls/copy project code from Git
         stage('Checkout K8s Manifest Repo') {
             steps {
                 git branch: 'main',
@@ -49,22 +49,24 @@ pipeline {
             }
         }
 
+
         // sed -i "s#mdnaiim/agrobd-app:[0-9]*#${DOCKER_IMAGE}#g" deployment.yaml
         stage('Update K8s Manifest & Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'jenkins-github-https-cred')]) {
                     sh """
                     echo '📝 Updating deployment.yaml with new image tag...'
-                    sed -i "s#mdnaiim/agrobd-app:.*#${DOCKER_IMAGE}#g" deployment.yaml
+                    sed -i "s#mdnaiim/agrobd-app:.*#${DOCKER_IMAGE}#g" agrobd-app/deployment.yaml
 
                     git config user.email "jenkins@local"
                     git config user.name "Jenkins Pipeline"
-                    git add deployment.yaml
+                    git add agrobd-app/deployment.yaml
                     git commit -m "Updated deployment.yaml with image tag ${IMAGE_TAG}" || echo "No changes to commit"
                     git push origin main
                     """
                 }
             }
         }
+
     }
 }
