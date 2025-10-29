@@ -2,7 +2,6 @@
 .gitignore
 node_modules
 vendor
-storage
 tests
 *.md
 *.log
