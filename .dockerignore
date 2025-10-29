@@ -5,15 +5,6 @@ vendor
 tests
 *.md
 *.log
-.git
-.gitignore
-node_modules
-vendor
-storage
-tests
-*.md
-*.log
-.env
 !composer.json
 !composer.lock
 
