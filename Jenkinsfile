@@ -6,7 +6,6 @@ pipeline {
         DOCKER_IMAGE = "mdnaiim/agrobd-app:${BUILD_NUMBER}"
     }
 
-    // pull/copy from git repo
     stages {
         stage('Checkout App Repo') {
             steps {
@@ -27,9 +26,11 @@ pipeline {
 
         stage('Push Docker Image to DockerHub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-cred',
-                                  usernameVariable: 'DOCKERHUB_USER',
-                                  passwordVariable: 'DOCKERHUB_PASS')]) {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-cred',
+                    usernameVariable: 'DOCKERHUB_USER',
+                    passwordVariable: 'DOCKERHUB_PASS'
+                )]) {
                     script {
                         echo "🔐 Logging in to DockerHub..."
                         sh """
@@ -41,33 +42,14 @@ pipeline {
                 }
             }
         }
+    }
 
-        // pull/copy from git repo
-        stage('Checkout K8s Manifest Repo') {
-            steps {
-                git branch: 'main',
-                    credentialsId: 'jenkins-github-https-cred',
-                    url: 'https://github.com/abunaiim25/AgroBd-DEPLOYMENT.git'
-            }
+    post {
+        success {
+            echo "✅ Docker image pushed successfully: ${env.DOCKER_IMAGE}"
         }
-
-        stage('Update K8s Manifest & Push') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'jenkins-github-https-cred')]) {
-                    script {
-                        echo "📝 Updating deployment.yaml with new image tag..."
-                        sh """
-                        sed -i "s#mdnaiim/agrobd-app:.*#${env.DOCKER_IMAGE}#g" agrobd-app/deployment.yaml
-
-                        git config user.email "jenkins@local"
-                        git config user.name "Jenkins Pipeline"
-                        git add agrobd-app/deployment.yaml
-                        git commit -m "Updated deployment.yaml with image tag ${env.IMAGE_TAG}" || echo "No changes to commit"
-                        git push origin main
-                        """
-                    }
-                }
-            }
+        failure {
+            echo "❌ Failed to build or push Docker image!"
         }
     }
 }
