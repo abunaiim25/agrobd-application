@@ -41,14 +41,14 @@ pipeline {
                 }
             }
         }
+    }
 
-        post {
-            success {
-                echo "✅ Docker image pushed successfully: ${env.DOCKER_IMAGE}"
-            }
-            failure {
-                echo "❌ Failed to build or push Docker image!"
-            }
+    post {
+        success {
+            echo "✅ Docker image pushed successfully: ${env.DOCKER_IMAGE}"
+        }
+        failure {
+            echo "❌ Failed to build or push Docker image!"
         }
     }
 }
