@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(
+            name: 'IMAGE_TAG',
+            defaultValue: '',
+            description: 'Docker image tag to update in manifest')
+    }
+
+    environment {
+        DOCKER_IMAGE = "mdnaiim/agrobd-app:${IMAGE_TAG}"
+    }
+
+    stages {
+        stage('Checkout Manifest Repo') {
+            steps {
+                git branch: 'main',
+                    credentialsId: 'jenkins-github-https-cred',
+                    url: 'https://github.com/abunaiim25/AgroBd-DEPLOYMENT.git'
+            }
+        }
+
+        stage('Update deployment.yaml') {
+            steps {
+                script {
+                    echo "📝 Updating deployment.yaml with image: ${DOCKER_IMAGE}"
+                    sh """
+                    sed -i "s#__VERSION__#${IMAGE_TAG}#g" agrobd-app/deployment.yaml
+                    git config user.email "jenkins@local"
+                    git config user.name "Jenkins Pipeline"
+                    git add agrobd-app/deployment.yaml
+                    git commit -m "Update deployment to ${DOCKER_IMAGE}" || echo "No changes to commit"
+                    git push origin main
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Manifest updated successfully with image ${DOCKER_IMAGE}"
+        }
+        failure {
+            echo "❌ Failed to update manifest repo!"
+        }
+    }
+}
