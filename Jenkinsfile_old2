@@ -6,6 +6,7 @@ pipeline {
         DOCKER_IMAGE = "mdnaiim/agrobd-app:${BUILD_NUMBER}"
     }
 
+    // pull/copy from git repo
     stages {
         stage('Checkout App Repo') {
             steps {
@@ -26,11 +27,9 @@ pipeline {
 
         stage('Push Docker Image to DockerHub') {
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-cred',
-                    usernameVariable: 'DOCKERHUB_USER',
-                    passwordVariable: 'DOCKERHUB_PASS'
-                )]) {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-cred',
+                                  usernameVariable: 'DOCKERHUB_USER',
+                                  passwordVariable: 'DOCKERHUB_PASS')]) {
                     script {
                         echo "🔐 Logging in to DockerHub..."
                         sh """

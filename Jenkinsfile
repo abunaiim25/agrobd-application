@@ -3,10 +3,9 @@ pipeline {
 
     environment {
         IMAGE_TAG = "${BUILD_NUMBER}"
-        DOCKER_IMAGE = "mdnaiim/agrobd-app:${BUILD_NUMBER}"
+        DOCKER_IMAGE = "mdnaiim/agrobd-app:${IMAGE_TAG}"
     }
 
-    // pull/copy from git repo
     stages {
         stage('Checkout App Repo') {
             steps {
@@ -20,7 +19,7 @@ pipeline {
             steps {
                 script {
                     echo "🛠 Building Docker Image..."
-                    sh "docker build -t ${env.DOCKER_IMAGE} ."
+                    sh "docker build -t ${DOCKER_IMAGE} ."
                 }
             }
         }
@@ -34,7 +33,7 @@ pipeline {
                         echo "🔐 Logging in to DockerHub..."
                         sh """
                         echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
-                        docker push ${env.DOCKER_IMAGE}
+                        docker push ${DOCKER_IMAGE}
                         docker logout
                         """
                     }
@@ -45,7 +44,11 @@ pipeline {
 
     post {
         success {
-            echo "✅ Docker image pushed successfully: ${env.DOCKER_IMAGE}"
+            echo "✅ Docker image pushed successfully: ${DOCKER_IMAGE}"
+
+            // Trigger second pipeline automatically
+            build job: 'AgroBd-Manifest-Update',
+                  parameters: [string(name: 'IMAGE_TAG', value: "${IMAGE_TAG}")]
         }
         failure {
             echo "❌ Failed to build or push Docker image!"
