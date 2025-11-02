@@ -47,7 +47,7 @@ pipeline {
             echo "✅ Docker image pushed successfully: ${DOCKER_IMAGE}"
 
             // Trigger second pipeline automatically
-            build job: 'AgroBd-Manifest-Update',
+            build job: 'AgroBd-Manifest-Image-Update',
                   parameters: [string(name: 'IMAGE_TAG', value: "${IMAGE_TAG}")]
         }
         failure {
