@@ -14,12 +14,12 @@ class SslCommerzNotification extends AbstractSslCommerz
     /**
      * SslCommerzNotification constructor.
      */
-    public function __construct()
+    public function __construct($storeId = null, $storePassword = null)
     {
         $this->config = config('sslcommerz');
 
-        $this->setStoreId($this->config['apiCredentials']['store_id']);
-        $this->setStorePassword($this->config['apiCredentials']['store_password']);
+        $this->setStoreId($storeId ?: $this->config['apiCredentials']['store_id']);
+        $this->setStorePassword($storePassword ?: $this->config['apiCredentials']['store_password']);
     }
 
     public function orderValidate($post_data, $trx_id = '', $amount = 0, $currency = "BDT")
@@ -359,8 +359,8 @@ class SslCommerzNotification extends AbstractSslCommerz
         $this->data['emi_option'] = (isset($info['emi_option'])) ? $info['emi_option'] : null; // integer (1)	Mandatory - This is mandatory if transaction is EMI enabled and Value must be 1/0. Here, 1 means customer will get EMI facility for this transaction
         $this->data['emi_max_inst_option'] = (isset($info['emi_max_inst_option'])) ? $info['emi_max_inst_option'] : null; // integer (2)	Max instalment Option, Here customer will get 3,6, 9 instalment at gateway page
         $this->data['emi_selected_inst'] = (isset($info['emi_selected_inst'])) ? $info['emi_selected_inst'] : null; // integer (2)	Customer has selected from your Site, So no instalment option will be displayed at gateway page
-        $this->data['emi_allow_only'] = (isset($info['emi_allow_only'])) ? $info['emi_allow_only'] : 0; 
-        
+        $this->data['emi_allow_only'] = (isset($info['emi_allow_only'])) ? $info['emi_allow_only'] : 0;
+
         return $this->data;
     }
 

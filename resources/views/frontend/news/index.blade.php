@@ -2,14 +2,15 @@
 
 
 @section('title')
-    AgroBd - News
+    AmarkrishiponnoroBd - News
 @endsection
 
 
 @section('frontend_content')
     <div id="blog-home " class="mt-5 pt-5 container" style="display: flex; justify-content: space-between;">
         <div>
-            <h2 class="font-weight-bold ">News</h2>
+            <h2 class="font-weight-bold ">🌾 সর্বশেষ কৃষি সংবাদ ও টিপস</h2>
+            <p class="text-muted">বাংলাদেশের কৃষি এবং কৃষকদের সম্পর্কে সর্বশেষ সংবাদ জানুন</p>
             <hr>
         </div>
 
@@ -19,7 +20,7 @@
                 <div class="form-group">
                     <div style="display: flex; justify-content: space-between;">
                         <input type="text" name="query" id="query" class="form-control mr-1" {{-- value="{{request()->input('query')}}" --}}
-                            placeholder="search news...">
+                            placeholder="সংবাদ খুঁজুন...">
 
                         <button type="submit" class="btn text-white"> <i class="search fal fa-search"></i></button>
                     </div>
@@ -35,11 +36,11 @@
             @foreach ($news as $row)
                 <div class="post col-lg-6 col-md-6 col-12 mt-5">
                     <a style="text-decoration: none;color:black" href="{{ url('news_details/' . $row->id) }}">
-                       
+
                         <div class="post-img">
                             <img style="height: 350px;  width: 100%;" class="img-fluid "
                                 src="{{ asset('img_DB/news/' . $row->image) }}" alt="">
-                                
+
                             <div class="top-left badge badge-success">
                                 {{ $row->category }}
                             </div>
@@ -65,7 +66,7 @@
             @foreach ($news_old as $row)
                 <div class="post col-lg-4 col-md-4 col-12 mt-5">
                     <a style="text-decoration: none;color:black" href="{{ url('news_details/' . $row->id) }}">
-                        
+
                         <div class="post-img">
                             <img style="height: 250px;  width: 100%;  border-radius: 15px;" class="img-fluid "
                                 src="{{ asset('img_DB/news/' . $row->image) }}" alt="">
@@ -74,7 +75,7 @@
                                 {{ $row->category }}
                             </div>
                         </div>
-                        
+
                         <h6 class=" font-weight-normal pt-3">{{ $row->title }}
                         </h6>
                     </a>

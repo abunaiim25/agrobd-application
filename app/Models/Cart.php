@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Business\MyBusiness;
+use App\Models\Product;
 
 class Cart extends Model
 {
@@ -13,7 +15,13 @@ class Cart extends Model
         'product_id', 'qty','price','user_ip',  'user_id',
     ];
 
-    public function product(){
+    public function product()
+    {
         return $this->belongsTo(Product::class,'product_id');
+    }
+
+    public function businessProduct()
+    {
+        return $this->belongsTo(MyBusiness::class,'product_id');
     }
 }

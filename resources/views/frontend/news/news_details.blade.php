@@ -2,13 +2,14 @@
 
 
 @section('title')
-    AgroBd - News Details
+    AmarkrishiponnoroBd - News Details
 @endsection
 
 
 @section('frontend_content')
     <section id="blog-home " class="my-5 pt-5 container">
-        <h2 class="font-weight-bold ">News Details</h2>
+        <h2 class="font-weight-bold ">🌾 কৃষি সংবাদ বিস্তারিত</h2>
+        <p class="text-muted">আরও বিস্তারিত জানুন এই সংবাদটি সম্পর্কে</p>
         <hr>
     </section>
 

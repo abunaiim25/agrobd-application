@@ -2,7 +2,7 @@
 
 
 @section('title')
-    AgroBd - Review
+    Amarkrishiponno - Review
 @endsection
 
 
@@ -27,7 +27,7 @@
                                     <textarea class="form-control" name="user_review"  rows="5" placeholder="Write a review"></textarea>
                                     <button type="submit" class="btn btn-warning mt-3">Submit Review</button>
                                 </form>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -35,5 +35,5 @@
         </div>
     </section>
 
- 
+
 @endsection

@@ -1,4 +1,7 @@
 {
+    "name": "agrobd-app",
+    "description": "AgroBd - Agricultural E-Commerce Platform",
+    "version": "1.0.0",
     "private": true,
     "scripts": {
         "dev": "npm run development",

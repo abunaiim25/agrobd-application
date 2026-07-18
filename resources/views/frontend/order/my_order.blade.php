@@ -2,7 +2,7 @@
 
 
 @section('title')
-    AgroBd - My Orders
+    Amarkrishiponno - My Orders
 @endsection
 
 @php
@@ -23,7 +23,7 @@
                 <div class="row row-sm">
                     <div class="col-md-12">
 
-                       
+
                         <div class="card " style="overflow: auto">
                             <div class="card-header" style="background: #81B622; color:#fff">My Order History</div>
 

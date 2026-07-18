@@ -2,7 +2,7 @@
 
 
 @section('title')
-    AgroBd - Cart
+    Amarkrishiponno - Cart
 @endsection
 
 
@@ -12,11 +12,11 @@
         .big-hr {
             width: 100% !important;
         }
-
     </style>
 
     <section id="cart-home " class="mt-5 pt-5 container">
-        <h2 class="font-weight-bold ">Shopping Cart</h2>
+        <h2 class="font-weight-bold ">আমার কেনাকাটার ঝুড়ি</h2>
+        <p class="text-muted">আপনার নির্বাচিত কৃষি পণ্যগুলি এখানে দেখুন এবং পরিচালনা করুন</p>
         <hr>
     </section>
 
@@ -39,12 +39,24 @@
                 <tbody>
 
                     @foreach ($carts as $cart)
+                        @php
+                            $cartItem = $cart->product ?? $cart->businessProduct;
+                        @endphp
                         <tr>
                             <td>
-                                <p class="font-weight-bold">{{ $cart->product->product_name }}</p>
+                                <p class="font-weight-bold">{{ optional($cartItem)->product_name ?? 'Unknown Product' }}</p>
                             </td>
-                            <td><img class="img-fluid"
-                                    src="{{ asset('img_DB/product/image_one/' . $cart->product->image_one) }}" alt="">
+                            <td>
+                                @if ($cart->product)
+                                    <img class="img-fluid"
+                                        src="{{ asset('img_DB/product/image_one/' . $cartItem->image_one) }}" alt="">
+                                @elseif($cart->businessProduct)
+                                    <img class="img-fluid"
+                                        src="{{ asset('img_DB/my_business/image_one/' . $cartItem->image_one) }}"
+                                        alt="">
+                                @else
+                                    <span class="text-danger">Image unavailable</span>
+                                @endif
                             </td>
                             <td>
                                 <p><small> {{ $cart->price }} TK</small></p>
@@ -52,15 +64,15 @@
 
                             {{-- stock or outOfStock --}}
                             <td>
-                                @if ($cart->product->product_quantity >= $cart->qty)
+                                @if ($cartItem && $cartItem->product_quantity >= $cart->qty)
                                     <form action="{{ url('cart_quantity_update/' . $cart->id) }}" method="POST">
                                         @csrf
-                                        <input style="width: 70px; padding-left:3px;" name="qty" value="{{ $cart->qty }}"
-                                            min="1" type="number">
-                                        <button type="submit" class="btn btn-sm text-white">Update</button>
+                                        <input style="width: 70px; padding-left:3px;" name="qty"
+                                            value="{{ $cart->qty }}" min="1" type="number">
+                                        <button type="submit" class="btn btn-sm btn-success text-white">Update</button>
                                     </form>
                                 @else
-                                <label class="badge bg-danger" for="">Out of stock</label>
+                                    <label class="badge bg-danger" for="">Out of stock</label>
                                 @endif
                             </td>
 
@@ -68,7 +80,12 @@
                             <td>
                                 <p><small> {{ $cart->price * $cart->qty }} TK</small></p>
                             </td>
-                            <td><a href="{{ url('cart_destroy/' . $cart->id) }}"><i class="fas fa-trash"></i></a></td>
+                            <td>
+                                <a href="{{ url('cart_destroy/' . $cart->id) }}"
+                                    onclick="return confirm('আপনি কি এই পণ্যটি কার্ট থেকে সরাতে চান?');">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
                         </tr>
                     @endforeach
 
@@ -76,13 +93,14 @@
 
             </table>
 
-            <a class="btn float-end mt-3" style="background: #81B622; color:#fff" href="{{ url('shop') }}" role="button">Continue
+            <a class="btn float-end mt-3" style="background: #81B622; color:#fff" href="{{ url('shop') }}"
+                role="button">Continue
                 to Shopping</a>
-
         @else
             <div class="card p-5 text-white" style="background: coral">
                 <h2 class="text-center ">Carts Not Available</h2>
-                <a class="btn float-end" style="background: coral; color:#fff" href="{{ url('shop') }}" role="button">Continue
+                <a class="btn float-end" style="background: coral; color:#fff" href="{{ url('shop') }}"
+                    role="button">Continue
                     to Shopping</a>
             </div>
         @endif
@@ -140,7 +158,6 @@
                                 <p> <strong>{{ $subtotal - session()->get('discount')['discount_amount'] }}</strong></p>
                             </div>
                         </div>
-
                     @else
                         <div class="d-flex justify-content-between my-3 mx-3">
                             <h6><strong> Total</strong></h6>

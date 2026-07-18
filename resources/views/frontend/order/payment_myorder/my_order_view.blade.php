@@ -2,7 +2,7 @@
 
 
 @section('title')
-    AgroBd - My Orders
+    Amarkrishiponno - My Orders
 @endsection
 
 
@@ -21,7 +21,7 @@
 
                     <div class="mb-3" style="display: flex; justify-content: space-between;">
                         <div>
-                           
+
                         </div>
 
                         <div class="" style="float:right">
@@ -146,7 +146,7 @@
                                     <div class="col-lg-4 my-1">
                                         <div class="form-group">
                                             <label class="form-control-label">Email address: </label>
-                                            <input class="form-control" type="text" 
+                                            <input class="form-control" type="text"
                                                 value="{{ $shipping->email }}" readonly>
                                         </div>
                                     </div>
@@ -154,7 +154,7 @@
                                     <div class="col-lg-4 my-1">
                                         <div class="form-group">
                                             <label class="form-control-label">Shipping Phone: </label>
-                                            <input class="form-control" type="text" 
+                                            <input class="form-control" type="text"
                                                 value="{{ $shipping->phone }}" readonly>
                                         </div>
                                     </div>
@@ -162,7 +162,7 @@
                                     <div class="col-lg-4 my-1">
                                         <div class="form-group">
                                             <label class="form-control-label">Shippng Address:</label>
-                                            <input class="form-control" type="text" 
+                                            <input class="form-control" type="text"
                                                 value="{{ $shipping->address }}" readonly>
                                         </div>
                                     </div>
@@ -170,7 +170,7 @@
                                     <div class="col-lg-4 my-1">
                                         <div class="form-group">
                                             <label class="form-control-label">State:</label>
-                                            <input class="form-control" type="text" 
+                                            <input class="form-control" type="text"
                                                 value="{{ $shipping->state }}" readonly>
                                         </div>
                                     </div>
@@ -178,7 +178,7 @@
                                     <div class="col-lg-4 my-1">
                                         <div class="form-group">
                                             <label class="form-control-label">Post Code: </label>
-                                            <input class="form-control" type="text" 
+                                            <input class="form-control" type="text"
                                                 value="{{ $shipping->post_code }}" readonly>
                                         </div>
                                     </div>
@@ -186,16 +186,16 @@
                                     <div class="col-lg-4 my-1">
                                         <div class="form-group">
                                             <label class="form-control-label">Transaction Id: </label>
-                                            <input class="form-control" type="text" 
+                                            <input class="form-control" type="text"
                                                 value="{{ $shipping->transaction_id }}" readonly>
                                         </div>
                                     </div>
 
-                                    
+
                                     <div class="col-lg-4 my-1">
                                         <div class="form-group">
                                             <label class="form-control-label">Currency: </label>
-                                            <input class="form-control" type="text" 
+                                            <input class="form-control" type="text"
                                                 value="{{ $shipping->currency }}" readonly>
                                         </div>
                                     </div>
@@ -203,7 +203,7 @@
                                     <div class="col-lg-4 my-1">
                                         <div class="form-group">
                                             <label class="form-control-label">Payment In Online: </label>
-                                            <input class="form-control" type="text" 
+                                            <input class="form-control" type="text"
                                                value="{{ $shipping->amount }} TK"
                                                 readonly>
                                         </div>

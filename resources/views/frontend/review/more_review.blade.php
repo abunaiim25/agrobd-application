@@ -2,7 +2,7 @@
 
 
 @section('title')
-    AgroBd - All Review
+    Amarkrishiponno - All Review
 @endsection
 
 
@@ -53,7 +53,7 @@
                                     </div>
 
                                 </div>
-                                
+
                                 @php
                                     $rating = App\Models\Business\RatingBusiness::where('prod_id', $business->id)
                                             ->where('user_id', $item->user_id)

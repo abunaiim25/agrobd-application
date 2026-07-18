@@ -65,9 +65,9 @@
             </table>
 
         @else
-            <div class="card p-5 text-white" style="background: coral">
+            <div class="card p-5 text-white" style="background: green">
                 <h2 class="text-center ">Wishlist Not Available</h2>
-                <a class="btn float-end" style="background: coral; color:#fff" href="{{ url('shop') }}"
+                <a class="btn float-end" style="background: green; color:#fff" href="{{ url('shop') }}"
                     role="button">Continue
                     to Shopping</a>
             </div>

@@ -35,14 +35,14 @@ class HomeController extends Controller
         {
             return redirect()->back();
         }
-        
+
     }
 
 
-    
 
 
-    
+
+
 public function index()
 {
        $products = Product::where('status',1)->latest()->get();

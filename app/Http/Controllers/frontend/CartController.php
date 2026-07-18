@@ -14,7 +14,7 @@ class CartController extends Controller
 
     //===============cart_add=================
     public function cart_add(Request $request, $id)
-   { 
+   {
         $check = Cart::where('product_id',$id)->where('user_id', Auth::id())->where('user_ip',request()->ip())->first();
         if ($check) {
            // Cart::where('product_id',$id)->where('user_ip',request()->ip())->increment('qty');
@@ -43,15 +43,21 @@ public function cart_page()
 
   //=====================cart quantity update====================
   public function cart_quantity_update(Request $request, $id){
-    Cart::where('id',$id)->where('user_ip',request()->ip())->update([
-        'qty' => $request->qty,
-    ]);
+    Cart::where('id',$id)
+        ->where('user_id', Auth::id())
+        ->where('user_ip',request()->ip())
+        ->update([
+            'qty' => $request->qty,
+        ]);
     return Redirect()->back()->with('status','Quantity Updated');
 }
 
 //======================cart destroy===============================
 public function cart_destroy($id){
-    Cart::where('id',$id)->where('user_ip',request()->ip())->delete();
+    Cart::where('id',$id)
+        ->where('user_id', Auth::id())
+        ->where('user_ip',request()->ip())
+        ->delete();
     return Redirect()->back()->with('status','Cart Product Removed');
 }
 
@@ -60,7 +66,7 @@ public function cart_destroy($id){
     public function discount_apply(Request $request){
         $check = Discount::where('discount_name',$request->discount_name)->first();
         if ($check)
-         {  
+         {
             $subtotal = Cart::all()->where('user_id', Auth::id())->where('user_ip',request()->ip())->sum(function($t){
             return $t->price * $t->qty;
             });
@@ -78,7 +84,7 @@ public function cart_destroy($id){
         }
     }
 
-    // coupon destroy 
+    // coupon destroy
     public function discount_destroy(){
         if (Session::has('discount')) {
            session()->forget('discount');

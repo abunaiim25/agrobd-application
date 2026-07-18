@@ -6,9 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Business\MyBusiness;
 use App\Models\Business\RatingBusiness;
 use App\Models\Business\ReviewBusiness;
-use App\Models\Product;
-use App\Models\Rating;
-use App\Models\Review;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -84,6 +81,14 @@ class MybusinessController extends Controller
         $business->post_code = $request->post_code;
         $business->personal_description = $request->personal_description;
 
+        $business->payment_gateway = $request->payment_gateway;
+        $business->store_id = $request->store_id;
+        $business->store_password = $request->store_password;
+        $business->bkash_number = $request->bkash_number;
+        $business->bank_name = $request->bank_name;
+        $business->bank_account = $request->bank_account;
+        $business->bank_routing = $request->bank_routing;
+
         $business->save();
         return Redirect('my_business')->with('status', 'Business Product Added Successfully');
     }
@@ -99,7 +104,7 @@ class MybusinessController extends Controller
         $ratings = RatingBusiness::where('prod_id', $business->id)->get();
         $rating_sum = RatingBusiness::where('prod_id', $business->id)->sum('stars_rated');
         $user_rating = RatingBusiness::where('prod_id', $business->id)->where('user_id', Auth::id())->first();
-        //review 
+        //review
         $reviews = ReviewBusiness::where('prod_id', $business->id)->join('users',  'review_businesses.user_id', 'users.id')->select('review_businesses.*', 'users.name')
             ->latest()->take(3)->get();
         //ratting
@@ -207,6 +212,14 @@ class MybusinessController extends Controller
         $business->country = $request->country;
         $business->post_code = $request->post_code;
         $business->personal_description = $request->personal_description;
+
+        $business->payment_gateway = $request->payment_gateway;
+        $business->store_id = $request->store_id;
+        $business->store_password = $request->store_password;
+        $business->bkash_number = $request->bkash_number;
+        $business->bank_name = $request->bank_name;
+        $business->bank_account = $request->bank_account;
+        $business->bank_routing = $request->bank_routing;
 
         $business->update();
         return Redirect('profile_business_product_details/' . $business->id)->with('status', 'Business Product Updated Successfully');
@@ -322,5 +335,42 @@ class MybusinessController extends Controller
         ->join('users',  'review_businesses.user_id', 'users.id')->select('review_businesses.*', 'users.name')
         ->latest()->paginate(10);
         return view('frontend.my_business.review.more_review', compact('review', 'business'));
+    }
+
+    //=======================Business Buyers======================================
+    public function my_buyers()
+    {
+        // Get all buyers who purchased from the authenticated seller's business products
+        $buyers = \App\Models\SellerBuyer::where('seller_id', Auth::id())
+            ->with('business', 'buyer')
+            ->latest()
+            ->paginate(15);
+
+        return view('frontend.my_business.my_buyers', compact('buyers'));
+    }
+
+    public function buyers_by_product($business_id)
+    {
+        // Get buyers for a specific business product
+        $business = MyBusiness::where('id', $business_id)->where('user_id', Auth::id())->firstOrFail();
+
+        $buyers = \App\Models\SellerBuyer::where('seller_id', Auth::id())
+            ->where('business_id', $business_id)
+            ->with('buyer')
+            ->latest()
+            ->paginate(15);
+
+        return view('frontend.my_business.buyers_by_product', compact('buyers', 'business'));
+    }
+
+    public function buyer_details($id)
+    {
+        // Get detailed information about a specific buyer
+        $buyer = \App\Models\SellerBuyer::where('id', $id)
+            ->where('seller_id', Auth::id())
+            ->with('business', 'buyer')
+            ->firstOrFail();
+
+        return view('frontend.my_business.buyer_details', compact('buyer'));
     }
 }

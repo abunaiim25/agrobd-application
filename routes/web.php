@@ -107,8 +107,8 @@ Route::get('admin_orders_view/{id}',[OrderadminController::class,'admin_orders_v
 Route::get('admin_orders_delete/{id}',[OrderadminController::class,'admin_orders_delete']);
 Route::PUT('update_order_status/{id}',[OrderadminController::class,'update_order_status']);
 Route::get('order_status_history',[OrderadminController::class,'order_status_history']);
-Route::get('orders_search',[OrderadminController::class,'orders_search']); 
-Route::get('orders_history_search',[OrderadminController::class,'orders_history_search']); 
+Route::get('orders_search',[OrderadminController::class,'orders_search']);
+Route::get('orders_history_search',[OrderadminController::class,'orders_history_search']);
 
 //=====================admin_payment_online===========================
 Route::get('admin_payment_online',[PaymentController::class,'admin_payment_online']);
@@ -116,8 +116,8 @@ Route::get('admin_payment_orders_view/{id}',[PaymentController::class,'admin_pay
 Route::get('admin_payment_orders_delete/{id}',[PaymentController::class,'admin_payment_orders_delete']);
 Route::PUT('update_payment_status/{id}',[PaymentController::class,'update_payment_status']);
 Route::get('order_payment_history',[PaymentController::class,'order_payment_history']);
-Route::get('payment_orders_search',[PaymentController::class,'payment_orders_search']); 
-Route::get('payment_orders_history_search',[PaymentController::class,'payment_orders_history_search']); 
+Route::get('payment_orders_search',[PaymentController::class,'payment_orders_search']);
+Route::get('payment_orders_history_search',[PaymentController::class,'payment_orders_history_search']);
 //payment_email_send
 Route::get('payment_email_view/{id}',[EmailController::class,'payment_email_view']);
 Route::post('payment_send_email/{id}',[EmailController::class,'payment_send_email']);
@@ -223,7 +223,7 @@ Route::get('my_business',[MybusinessController::class,'my_business']);
 
 //=============auth check===========================
 Route::middleware(['auth'])->group(function (){
-    
+
 //================Frontend Cart========================
 Route::post('cart_add/{id}',[CartController::class,'cart_add']);
 Route::get('cart',[CartController::class,'cart_page']);
@@ -256,7 +256,7 @@ Route::post('update_my_shipping_payment/{id}',[MyOrderPayment::class,'update_my_
 
 //=======================Wishlist==========================
 Route::get('add_to_wishlist/{id}',[WishlistController::class,'add_to_wishlist']);
-Route::get('wishlist',[WishlistController::class,'wishlist']);     
+Route::get('wishlist',[WishlistController::class,'wishlist']);
 Route::get('wishlist_destroy/{id}',[WishlistController::class,'wishlist_destroy']);
 
 //=======================Rating==========================
@@ -283,6 +283,16 @@ Route::get('delete_business/{id}',[MybusinessController::class,'delete_business'
 Route::get('business_zero/{id}',[MybusinessController::class,'business_zero']);
 Route::get('business_one/{id}',[MybusinessController::class,'business_one']);
 
+// business payment for seller
+Route::get('business_payment/{id}', [App\Http\Controllers\SslCommerzPaymentController::class, 'businessPaymentForm']);
+Route::post('pay-business', [App\Http\Controllers\SslCommerzPaymentController::class, 'payBusiness']);
+Route::post('confirm-bkash-payment', [App\Http\Controllers\SslCommerzPaymentController::class, 'confirmBkashPayment']);
+Route::post('confirm-bank-payment', [App\Http\Controllers\SslCommerzPaymentController::class, 'confirmBankPayment']);
+
+// my buyers - see buyer information after payment
+Route::get('my_buyers',[MybusinessController::class,'my_buyers']);
+Route::get('buyers_by_product/{business_id}',[MybusinessController::class,'buyers_by_product']);
+Route::get('buyer_details/{id}',[MybusinessController::class,'buyer_details']);
 
 //add-rating
 Route::post('business_add_rating',[MybusinessController::class,'business_add_rating']);

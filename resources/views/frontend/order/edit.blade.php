@@ -2,7 +2,7 @@
 
 
 @section('title')
-    AgroBd - My Shipping Edit
+    Amarkrishiponno - My Shipping Edit
 @endsection
 
 
@@ -19,7 +19,7 @@
             <div class="sl-pagebody">
                 <div class="row row-sm">
 
-                    
+
                     <div class="card p-4">
 
                         <div class="card w-100  mb-3">
@@ -83,7 +83,7 @@
                                             <div class="form-group">
                                                 <label for="exampleInputEmail1">Description (Optional):</label>
                                                 <textarea style="color:black" rows="4" name="description"
-                                                    class="form-control  " 
+                                                    class="form-control  "
                                                     cols="5">{{ $shipping->description }}</textarea>
 
                                             </div>

@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn" dir="ltr">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="content-language" content="bn">
+    <meta name="language" content="Bengali">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
@@ -17,13 +20,14 @@
     <link href="{{ asset('img_DB/front/logo/' . $front->logo_small) }}" rel="icon">
     <link href="{{ asset('img_DB/front/logo/' . $front->logo_small) }}" rel="apple-touch-icon">
     {{-- <link rel="shortcut icon" href="{{ asset('img_DB/front/logo/' . $front->logo_small) }}" alt="" /> --}}
-    
+
     <link rel="stylesheet" href="{{ asset('frontend') }}/css/style_index.css">
     <link rel="stylesheet" href="{{ asset('frontend') }}/css/style_shop.css">
     <link rel="stylesheet" href="{{ asset('frontend') }}/css/style_blog.css">
     <link rel="stylesheet" href="{{ asset('frontend') }}/css/style_cart.css">
     <link rel="stylesheet" href="{{ asset('frontend') }}/css/style_about.css">
     <link rel="stylesheet" href="{{ asset('frontend') }}/css/style_product_details.css">
+    <link rel="stylesheet" href="{{ asset('frontend') }}/css/style_business_profile.css">
 
 
     <!--stackpath bootstrap --------its very good-->
@@ -35,6 +39,55 @@
     <!--font awesome cdn link-->
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
         integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
+    <!-- Bengali Font Support -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700;900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        html {
+            -webkit-text-size-adjust: 100%;
+        }
+
+        * {
+            font-family: 'Noto Sans Bengali', 'Poppins', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            font-family: 'Noto Sans Bengali', 'Poppins', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Ensure proper rendering of Bengali text */
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Noto Sans Bengali', 'Poppins', system-ui, -apple-system, sans-serif;
+        }
+
+        p,
+        span,
+        a,
+        li,
+        div,
+        button,
+        label,
+        input,
+        textarea {
+            font-family: 'Noto Sans Bengali', 'Poppins', system-ui, -apple-system, sans-serif;
+        }
+
+        /* Fix text rendering quality */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    </style>
+
     <!---->
     <link rel="stylesheet" href="{{ asset('frontend') }}/Poppins/Poppins-Bold.ttf">
 
@@ -43,7 +96,7 @@
     <script type="text/javascript" src="{{ asset('frontend') }}/js/lightslider.js"></script>
     <link rel="stylesheet" href="{{ asset('frontend') }}/css/lightslider.css">
 
-    
+
 </head>
 
 <body>
@@ -85,6 +138,8 @@
             swal("{{ session('status') }}");
         </script>
     @endif
+
+    @yield('scripts')
 
     {{--
 <!--day Night Js-->

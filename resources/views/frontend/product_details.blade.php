@@ -1,28 +1,27 @@
-@extends('layouts.frontend_layout')
-
+﻿@extends('layouts.frontend_layout')
 
 @section('title')
-    AgroBd - Product Details
+    Amarkrishiponno - {{ $products->product_name }}
 @endsection
 
-
 @section('frontend_content')
-
-    <!-- (2)Rate Modal -->
+    <!-- Rating Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form action="{{ url('/add-rating') }}" method="POST">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                        <i class="fas fa-star"></i> ⭐ {{ $products->product_name }} এর রেটিং দিন
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <form action="{{ url('add-rating') }}" method="POST">
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $products->id }}">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Rate {{ $products->name }}</h5>
-                        <button style="color: white; background-color: green!important; " type="button"
-                            class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            X</button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="rating-css">
+                    <div class="modal-body p-4">
+                        <div class="rating-css text-center">
+                            <h6 class="mb-3 text-muted">এই পণ্যের গুণমান কেমন ছিল?</h6>
                             <div class="star-icon">
                                 @if ($user_rating)
                                     @for ($i = 1; $i <= $user_rating->stars_rated; $i++)
@@ -50,248 +49,715 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button style="background-color: green!important; border: none;" type="button"
-                            class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button style="background-color:green!important; border: none;" type="submit"
-                            class="btn btn-primary">Submit</button>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times"></i> বাতিল
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check"></i> রেটিং দিন
+                        </button>
                     </div>
-
                 </form>
-
             </div>
         </div>
     </div>
 
-
-    <!--product details-->
-    <section class="container product_deatils my-5 py-5">
-
-        <div class="row  mt-5">
-
-            <div class="col-lg-5 col-md-12 col-12">
-                <img class="img-fluid w-100 pb-1" src="{{ asset('img_DB/product/image_one/' . $products->image_one) }}"
-                    id="display_img" alt="">
-
-                <div class="small-img-group">
-                    <div class="small-img-col">
-                        <img src="{{ asset('img_DB/product/image_two/' . $products->image_two) }}" width="100%"
-                            class="small-img " alt="" onclick="myFunctionimg(this)">
-                    </div>
-                    <div class="small-img-col">
-                        <img src="{{ asset('img_DB/product/image_three/' . $products->image_three) }}" width="100%"
-                            class="small-img " alt="" onclick="myFunctionimg(this)">
-                    </div>
-                    <div class="small-img-col">
-                        <img src="{{ asset('img_DB/product/image_four/' . $products->image_four) }}" width="100%"
-                            class="small-img " alt="" onclick="myFunctionimg(this)">
-                    </div>
-                    <div class="small-img-col">
-                        <img src="{{ asset('img_DB/product/image_one/' . $products->image_one) }}" width="100%"
-                            class="small-img " alt="" onclick="myFunctionimg(this)">
-                    </div>
-                </div>
-
-                <div class="row mt-3 ">
-                    <div class="col-md-12">
-                        <!-- (1) Rate Button trigger modal (ShopController 4)-->
-                        <button style="background-color: white!important; color:black!important" type="button"
-                            class="btn btn-outline-dark mb-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                            <i class="fa fa-star checked"></i> Rate this product
-                        </button>
-
-                        <a href="{{ url('add-review/' . $products->id) }}" type="button"
-                            class="btn btn-outline-warning mb-2">
-                            Write a review
-                        </a>
-                    </div>
-
-                </div>
-
-
-            </div>
-
-
-
-            <div class="col-lg-6 col-md-12 col-12">
-                <h6><a style="text-decoration: none;color:black;" href="{{ url('shop') }}">Shop</a> /
-                    {{ $products->category->category_name }}</h6>
-                <h2 class="mt-4">{{ $products->product_name }}</h2>
-                <h4 class="my-2"> <b>Price: </b>{{ $products->price }} TK <small>(Per kg)</small></h4>
-
-
-                <!-- (3) ratings-->
-                @php $ratenum = number_format($rating_value)  @endphp
-                <div class="rating">
-                    @for ($i = 1; $i <= $ratenum; $i++)
-                        <i class="fa fa-star checked"></i>
-                    @endfor
-                    @for ($j = $ratenum + 1; $j <= 5; $j++)
-                        <i class="fa fa-star"></i>
-                    @endfor
-                    <span>
-                        @if ($ratings->count() > 0)
-                            {{ $ratings->count() }} Ratings
-                        @else
-                            No Ratings
-                        @endif
-                    </span>
-                </div>
-
-
-                {{-- stock or outOfStock --}}{{-- cart,CheckoutController,shop,OrderController --}}
-                <div class="my-2">
-                    <b>Availability:</b>
-                    @if ($products->product_quantity > 0)
-                        <label class="badge bg-success" for=""><span>{{ $products->product_quantity }} </span> kg in
-                            stock</label>
-                    @else
-                        <label class="badge bg-danger" for="">Out Of Stock</label>
-                    @endif
-                </div>
-
-
-
-                <form action="{{ url('cart_add/' . $products->id) }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="price" value="{{ $products->price }}">
-                    <p>
-                        <input class="my-2" style="100px!important;" name="qty" value="1" min="1" type="number">KG
-                    </p>
-
-                    {{-- stock or outOfStock --}}
-                    @if ($products->product_quantity > 0)
-                        <button type="submit" class="buy-btn button-style"
-                            style="width: 250px; height:45px; border-radius:4px">Buy Now <i
-                                class="fas fa-shopping-cart"></i></button>
-                    @endif
-                </form>
-
-                <a class="btn my-2 buy-btn button-style" style="background: coral; color:white; width: 250px; height:45px"
-                    href="{{ url('add_to_wishlist/' . $products->id) }}" role="button">Favourite <i
-                        class="fas fa-heart"></i></a>
-
-                <p>
-                    <a class="btn" style="background: coral; color:white; width: 250px;"
-                        href="{{ url('cart') }}" role="button">Cart <i class="fal fa-shopping-bag"></i></a>
-                </p>
-
-                <h2 class="mt-5">Product Details</h2>
-                <div style="text-align: justify;">
-                    <span>{{ $products->description }}</span>
-                </div>
-            </div>
-
-        </div>
-
-    </section>
-
-
-    {{-- Review --}}
-    <section>
+    <!-- Page Header -->
+    <section class="page-header-section bg-success text-white py-5 mt-5">
         <div class="container">
-            <div class="card p-4 ">
-
-                <div class="mb-1" style="display: flex; justify-content: space-between;">
-                    <div>
-                        <h2 class="mx-2">Reviews</h2>
-                    </div>
-                    <div class="" style="float:right">
-                        <a class="btn btn-warning btn-sm " href="{{ url('add-review/' . $products->id) }}" role="button">
-                            Write a review</a>
-                    </div>
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-2">
+                            <li class="breadcrumb-item">
+                                <a href="{{ url('/') }}" class="text-white text-decoration-none">
+                                    <i class="fas fa-home"></i> হোম
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{{ url('shop') }}" class="text-white text-decoration-none">
+                                    <i class="fas fa-store"></i> ব্যবসা
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active text-light" aria-current="page">
+                                {{ $products->category->category_name }}
+                            </li>
+                        </ol>
+                    </nav>
+                    <h1 class="display-5 fw-bold mb-0">{{ $products->product_name }}</h1>
+                    <p class="lead mb-0 opacity-75">🌾 বাংলাদেশের সেরা কৃষি পণ্য</p>
                 </div>
-
-                @foreach ($reviews as $item)
-                    <div class="card ">
-                        <div class="user-review">
-
-                            <div class="card-header px-3" style="line-height: 0.5; background: blanchedalmond">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <div>
-                                        <h3>{{ $item->user->name }}</h3>
-                                    </div>
-
-                                    <div class="" style="float:right">
-                                        @if ($item->user_id == Auth::id())
-                                            <a href="{{ url('delete-review/' . $item->id) }}"
-                                                class="float-end bg-danger badge text-white mx-1"
-                                                onclick="return confirm('Are You Sure To Delete?')"> <i
-                                                    class="fa fa-trash"></i></a>
-
-                                            <a href="{{ url('edit-review/' . $item->id) }}"
-                                                class="float-end bg-success badge text-white"> <i
-                                                    class="fa fa-pencil"></i></a>
-                                        @endif
-                                    </div>
-
-                                </div>
-
-                                @php
-                                    $rating = App\Models\Rating::where('prod_id', $products->id)
-                                        ->where('user_id', $item->user->id)
-                                        ->first();
-                                @endphp
-                                @if ($rating)
-                                    @php
-                                        $user_rated = $rating->stars_rated;
-                                    @endphp
-                                    @for ($i = 1; $i <= $user_rated; $i++)
-                                    <small><i class="fa fa-star checked"></i></small>
-                                    @endfor
-                                    @for ($j = $user_rated + 1; $j <= 5; $j++)
-                                    <small><i class="fa fa-star"></i></small>
-                                    @endfor
-                                @endif
-                                <small>{{ $item->created_at->diffForHumans() }}</small>
-                            </div>
-
-                            <p class="my-2 px-3">
-                                {{ $item->user_review }}
-                            </p>
+                <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                    <form action="{{ url('search_query') }}" method="GET" class="search-form">
+                        @csrf
+                        <div class="input-group">
+                            <input type="text" name="query" class="form-control form-control-lg"
+                                placeholder="🔍 পণ্য খুঁজুন..." value="{{ request()->input('query') }}">
+                            <button class="btn btn-light btn-lg" type="submit">
+                                <i class="fas fa-search text-success"></i>
+                            </button>
                         </div>
-                    </div>
-                @endforeach
-
-                @if ($reviews->count() > 2)
-                    <a class="btn btn-success btn-sm m-2" href="{{ url('review_more/' . $products->id) }}"
-                        role="button">Reviews See More</a>
-                @endif
-
+                    </form>
+                </div>
             </div>
         </div>
     </section>
 
+    <!-- Product Details Section -->
+    <section class="product-details-section py-5 bg-light">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Product Images -->
+                <div class="col-lg-6">
+                    <div class="product-image-container bg-white p-4 rounded-3 shadow-sm">
+                        <div class="main-image-wrapper mb-4 position-relative overflow-hidden rounded-3"
+                            style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                            <img class="img-fluid w-100 main-product-image"
+                                src="{{ asset('img_DB/product/image_one/' . $products->image_one) }}" id="display_img"
+                                alt="{{ $products->product_name }}" style="height: 400px; object-fit: contain;">
+                            <div class="image-overlay">
+                                <i class="fas fa-search-plus text-white fs-3"></i>
+                            </div>
+                        </div>
 
-    <!--product-->
-    <section class="featured my-5 pb-5">
+                        <div class="thumbnail-gallery d-flex gap-3 flex-wrap">
+                            <div class="thumbnail-item active"
+                                onclick="changeImage(this, '{{ asset('img_DB/product/image_one/' . $products->image_one) }}')">
+                                <img src="{{ asset('img_DB/product/image_one/' . $products->image_one) }}"
+                                    class="img-fluid rounded-2" alt="Main Image">
+                            </div>
+                            <div class="thumbnail-item"
+                                onclick="changeImage(this, '{{ asset('img_DB/product/image_two/' . $products->image_two) }}')">
+                                <img src="{{ asset('img_DB/product/image_two/' . $products->image_two) }}"
+                                    class="img-fluid rounded-2" alt="Image 2">
+                            </div>
+                            <div class="thumbnail-item"
+                                onclick="changeImage(this, '{{ asset('img_DB/product/image_three/' . $products->image_three) }}')">
+                                <img src="{{ asset('img_DB/product/image_three/' . $products->image_three) }}"
+                                    class="img-fluid rounded-2" alt="Image 3">
+                            </div>
+                            <div class="thumbnail-item"
+                                onclick="changeImage(this, '{{ asset('img_DB/product/image_four/' . $products->image_four) }}')">
+                                <img src="{{ asset('img_DB/product/image_four/' . $products->image_four) }}"
+                                    class="img-fluid rounded-2" alt="Image 4">
+                            </div>
+                        </div>
 
-        <div class="container text-center mt-5 py-5">
-            <h3><strong>Our Latest Product</strong></h3>
-            <hr class="mx-auto">
-            <p>Here you can check out our new product with fair price on Online-Marketing</p>
-        </div>
-
-
-        <div class="row mx-auto container-fluid">
-            <ul id="autoWidth" class="cs-hidden">
-
-                @foreach ($lt_products as $product)
-                    <li class="item-a">
-                        <div class="product text-center " style="width: 300px;">
-                            <a href="{{ url('product_details/' . $product->id) }}">
-                                <img class="img-fluid mb-3"
-                                    src="{{ asset('img_DB/product/image_one/' . $product->image_one) }}" alt="">
-
-                                <h3>{{ $product->product_name }}</h3>
-                                <h6 class="p-price">Price: {{ $product->price }} TK</h6>
-                                <button class="buy-btn button-style mt-2">Details</button>
+                        <!-- Action Buttons -->
+                        <div class="action-buttons mt-4 d-flex gap-2 flex-wrap">
+                            <button type="button" class="btn btn-outline-success flex-fill" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal">
+                                <i class="fas fa-star"></i> রেটিং দিন
+                            </button>
+                            <a href="{{ url('add-review/' . $products->id) }}" class="btn btn-warning flex-fill">
+                                <i class="fas fa-comment"></i> রিভিউ লিখুন
                             </a>
                         </div>
-                    </li>
-                @endforeach
-            </ul>
+                    </div>
+                </div>
+
+                <!-- Product Information -->
+                <div class="col-lg-6">
+                    <div class="product-info-card bg-white p-4 rounded-3 shadow-sm h-100">
+                        <div class="product-header mb-4">
+                            <div class="category-badge mb-3">
+                                <span class="badge bg-success fs-6 px-3 py-2">
+                                    <i class="fas fa-tag"></i> {{ $products->category->category_name }}
+                                </span>
+                            </div>
+                            <h2 class="product-title mb-3">{{ $products->product_name }}</h2>
+
+                            <!-- Price Section -->
+                            <div class="price-section bg-success bg-opacity-10 p-3 rounded-3 mb-3">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h3 class="text-success fw-bold mb-0 fs-2 text-white">
+                                            ৳{{ number_format((float) $products->price) }}
+                                        </h3>
+                                        <small class=" text-white">প্রতি কেজিতে</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <i class="fas fa-money-bill-wave text-success fs-1"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Rating Section -->
+                            <div class="rating-section mb-3">
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    @php $ratenum = number_format((float)$rating_value) @endphp
+                                    @for ($i = 1; $i <= $ratenum; $i++)
+                                        <i class="fas fa-star text-warning"></i>
+                                    @endfor
+                                    @for ($j = $ratenum + 1; $j <= 5; $j++)
+                                        <i class="far fa-star text-warning"></i>
+                                    @endfor
+                                    <span class="text-muted ms-2">
+                                        ({{ $ratings->count() > 0 ? $ratings->count() : 'কোন' }} রেটিং)
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Stock Status -->
+                            <div class="stock-status mb-4">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fas fa-warehouse text-success"></i>
+                                    <strong>স্টক অবস্থা:</strong>
+                                    @if ($products->product_quantity > 0)
+                                        <span class="badge bg-success fs-6 px-3 py-2">
+                                            <i class="fas fa-check"></i> {{ $products->product_quantity }} কেজি মজুদ আছে
+                                        </span>
+                                    @else
+                                        <span class="badge bg-danger fs-6 px-3 py-2">
+                                            <i class="fas fa-times"></i> স্টক শেষ
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- Purchase Section -->
+                            @if ($products->product_quantity > 0)
+                                <div class="purchase-section bg-light p-3 rounded-3 mb-4">
+                                    <h5 class="mb-3">
+                                        <i class="fas fa-shopping-cart text-success"></i> ক্রয় করুন
+                                    </h5>
+                                    <form action="{{ url('cart_add/' . $products->id) }}" method="POST">
+                                        @csrf
+                                        <div class="row g-3 align-items-end">
+                                            <div class="col-6">
+                                                <label class="form-label fw-bold">পরিমাণ (কেজি)</label>
+                                                <div class="input-group">
+                                                    <button type="button" class="btn btn-outline-secondary"
+                                                        id="quantity-decrease">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                    <input type="number" name="qty" id="quantity-input"
+                                                        class="form-control text-center fw-bold" value="1"
+                                                        min="1" max="{{ $products->product_quantity }}" required>
+                                                    <button type="button" class="btn btn-outline-secondary"
+                                                        id="quantity-increase">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <button type="submit" class="btn btn-success btn-lg w-100">
+                                                    <i class="fas fa-cart-plus"></i> কার্টে যোগ করুন
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="price" value="{{ $products->price }}">
+                                    </form>
+                                </div>
+                            @endif
+
+                            <!-- Product Description -->
+                            <div class="product-description">
+                                <h5 class="mb-3">
+                                    <i class="fas fa-info-circle text-success"></i> পণ্যের বিবরণ
+                                </h5>
+                                <div class="description-content text-justify">
+                                    <p class="mb-0">{{ $products->description }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
-    <!--product-->
+
+    <!-- Reviews Section -->
+    <section class="reviews-section py-5 bg-light">
+        <div class="container">
+            <div class="reviews-card bg-white p-4 rounded-3 shadow-sm">
+                <div class="reviews-header d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="mb-0">
+                        <i class="fas fa-comments text-success"></i> গ্রাহকদের রিভিউ
+                    </h3>
+                    <a href="{{ url('add-review/' . $products->id) }}" class="btn btn-success">
+                        <i class="fas fa-plus"></i> রিভিউ লিখুন
+                    </a>
+                </div>
+
+                @if ($reviews->count() > 0)
+                    <div class="reviews-list">
+                        @foreach ($reviews as $item)
+                            <div class="review-item border-bottom pb-4 mb-4">
+                                <div class="review-header d-flex justify-content-between align-items-start mb-3">
+                                    <div class="reviewer-info">
+                                        <h6 class="mb-1">
+                                            <i class="fas fa-user-circle text-success"></i> {{ $item->user->name }}
+                                        </h6>
+                                        <div class="review-rating mb-2">
+                                            @php
+                                                $rating = App\Models\Rating::where('prod_id', $products->id)
+                                                    ->where('user_id', $item->user_id)
+                                                    ->first();
+                                            @endphp
+                                            @if ($rating)
+                                                @php $user_rated = $rating->stars_rated; @endphp
+                                                @for ($i = 1; $i <= $user_rated; $i++)
+                                                    <i class="fas fa-star text-warning"></i>
+                                                @endfor
+                                                @for ($j = $user_rated + 1; $j <= 5; $j++)
+                                                    <i class="far fa-star text-muted"></i>
+                                                @endfor
+                                            @endif
+                                        </div>
+                                        <small class="text-muted">
+                                            <i class="fas fa-clock"></i> {{ $item->created_at->diffForHumans() }}
+                                        </small>
+                                    </div>
+
+                                    @if ($item->user_id == Auth::id())
+                                        <div class="review-actions">
+                                            <a href="{{ url('edit-review/' . $item->id) }}"
+                                                class="btn btn-sm btn-outline-success me-2">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="{{ url('delete-review/' . $item->id) }}"
+                                                class="btn btn-sm btn-outline-danger"
+                                                onclick="return confirm('আপনি কি এই রিভিউ মুছে ফেলতে চান?')">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <div class="review-content">
+                                    <p class="mb-0 text-justify">{{ $item->user_review }}</p>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    @if ($reviews->count() > 2)
+                        <div class="text-center mt-4">
+                            <a href="{{ url('review_more/' . $products->id) }}" class="btn btn-success">
+                                <i class="fas fa-eye"></i> আরও রিভিউ দেখুন
+                            </a>
+                        </div>
+                    @endif
+                @else
+                    <div class="text-center py-5">
+                        <i class="fas fa-comments text-muted fs-1 mb-3"></i>
+                        <h5 class="text-muted">এখনও কোন রিভিউ নেই</h5>
+                        <p class="text-muted mb-4">প্রথম রিভিউ লিখে অন্যদের সাহায্য করুন</p>
+                        <a href="{{ url('add-review/' . $products->id) }}" class="btn btn-success">
+                            <i class="fas fa-plus"></i> রিভিউ লিখুন
+                        </a>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Products Section -->
+    <section class="related-products-section py-5">
+        <div class="container">
+            <div class="section-header text-center mb-5">
+                <h2 class="display-6 fw-bold text-success mb-3">
+                    <i class="fas fa-leaf"></i> অন্যান্য পণ্য দেখুন
+                </h2>
+                <p class="lead text-muted">AgroBd থেকে আরও সেরা কৃষি পণ্য</p>
+                <div class="divider mx-auto"></div>
+            </div>
+
+            <div class="row g-4">
+                @foreach ($lt_products->take(8) as $product)
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="product-card bg-white rounded-3 shadow-sm overflow-hidden h-100">
+                            <div class="product-image position-relative">
+                                <img src="{{ asset('img_DB/product/image_one/' . $product->image_one) }}"
+                                    class="img-fluid w-100" alt="{{ $product->product_name }}"
+                                    style="height: 200px; object-fit: cover;">
+                                <div class="product-overlay">
+                                    <a href="{{ url('product_details/' . $product->id) }}"
+                                        class="btn btn-success btn-sm">
+                                        <i class="fas fa-eye"></i> বিস্তারিত দেখুন
+                                    </a>
+                                </div>
+                                @if ($product->product_quantity > 0)
+                                    <div class="stock-badge">
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check"></i> মজুদ আছে
+                                        </span>
+                                    </div>
+                                @else
+                                    <div class="stock-badge">
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times"></i> স্টক শেষ
+                                        </span>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="product-info p-3">
+                                <div class="category-badge mb-2">
+                                    <small class="text-success fw-bold">{{ $product->category->category_name }}</small>
+                                </div>
+                                <h6 class="product-title mb-2 fw-bold">{{ $product->product_name }}</h6>
+                                <div class="price-info">
+                                    <span
+                                        class="text-success fw-bold fs-5">৳{{ number_format((float) $product->price) }}</span>
+                                    <small class="text-muted">/কেজি</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="{{ url('shop') }}" class="btn btn-success btn-lg">
+                    <i class="fas fa-store"></i> সব পণ্য দেখুন
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        /* Page Header */
+        .page-header-section {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            box-shadow: 0 4px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .breadcrumb {
+            background: none;
+            padding: 0;
+        }
+
+        .breadcrumb-item+.breadcrumb-item::before {
+            content: "›";
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            color: white;
+        }
+
+        /* Product Images */
+        .product-image-container {
+            border: 1px solid #e9ecef;
+        }
+
+        .main-image-wrapper {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .main-image-wrapper:hover {
+            transform: scale(1.02);
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .main-image-wrapper:hover .image-overlay {
+            opacity: 1;
+        }
+
+        .thumbnail-gallery {
+            justify-content: center;
+        }
+
+        .thumbnail-item {
+            width: 80px;
+            height: 80px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .thumbnail-item:hover,
+        .thumbnail-item.active {
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+        }
+
+        .thumbnail-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Product Info */
+        .product-info-card {
+            border: 1px solid #e9ecef;
+        }
+
+        .category-badge .badge {
+            font-size: 0.75rem;
+        }
+
+        .product-title {
+            color: #2d3748;
+            line-height: 1.3;
+        }
+
+        .price-section {
+            border: 2px solid #28a745;
+        }
+
+        .rating-section .fa-star {
+            font-size: 1.1rem;
+        }
+
+        .stock-status .badge {
+            font-size: 0.75rem;
+        }
+
+        .purchase-section {
+            border: 1px solid #dee2e6;
+        }
+
+        .input-group button {
+            border-color: #dee2e6;
+        }
+
+        .input-group button:hover {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+
+        /* Hide clear button on number input */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        /* Contact Section */
+        .contact-card {
+            border: 1px solid #e9ecef;
+        }
+
+        .contact-item {
+            transition: transform 0.2s ease;
+        }
+
+        .contact-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-icon {
+            min-width: 40px;
+        }
+
+        /* Reviews Section */
+        .reviews-card {
+            border: 1px solid #e9ecef;
+        }
+
+        .review-item {
+            transition: all 0.3s ease;
+        }
+
+        .review-item:hover {
+            background-color: #f8f9fa;
+            padding-left: 10px;
+            margin-left: -10px;
+            border-radius: 8px;
+        }
+
+        .review-rating .fa-star {
+            font-size: 0.9rem;
+        }
+
+        /* Related Products */
+        .section-header .divider {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            margin: 1rem auto;
+        }
+
+        .product-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(40, 167, 69, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-card:hover .product-overlay {
+            opacity: 1;
+        }
+
+        .stock-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        /* Rating Modal */
+        .rating-css .fa-star {
+            font-size: 2rem;
+            color: #ddd;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .rating-css input[type="radio"] {
+            display: none;
+        }
+
+        .rating-css input[type="radio"]:checked~label,
+        .rating-css label:hover,
+        .rating-css label:hover~label {
+            color: #ffc107;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header-section .display-5 {
+                font-size: 2rem;
+            }
+
+            .thumbnail-gallery {
+                gap: 0.5rem;
+            }
+
+            .thumbnail-item {
+                width: 60px;
+                height: 60px;
+            }
+
+            .product-image-container,
+            .product-info-card {
+                margin-bottom: 1rem;
+            }
+
+            .contact-item {
+                margin-bottom: 0.5rem;
+            }
+
+            .related-products-section .col-lg-3 {
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .page-header-section {
+                padding: 2rem 0;
+            }
+
+            .page-header-section .display-5 {
+                font-size: 1.5rem;
+            }
+
+            .thumbnail-gallery {
+                justify-content: space-between;
+            }
+
+            .purchase-section .col-6 {
+                margin-bottom: 1rem;
+            }
+
+            .action-buttons .btn {
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+
+@endsection
+
+@section('scripts')
+    <script>
+        // Image switching functionality
+        function changeImage(element, imageSrc) {
+            // Update main image
+            document.getElementById('display_img').src = imageSrc;
+
+            // Update active thumbnail
+            document.querySelectorAll('.thumbnail-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            element.classList.add('active');
+        }
+
+        // qty controls
+        document.addEventListener('DOMContentLoaded', function() {
+            const decreaseBtn = document.getElementById('quantity-decrease');
+            const increaseBtn = document.getElementById('quantity-increase');
+            const qtyInput = document.getElementById('quantity-input');
+            const maxqty = parseInt(qtyInput.getAttribute('max'), 10) || 1;
+
+            function updateqty(delta) {
+                let value = parseInt(qtyInput.value, 10) || 1;
+                value += delta;
+                if (value < 1) value = 1;
+                if (value > maxqty) value = maxqty;
+                qtyInput.value = value;
+            }
+
+            if (decreaseBtn) {
+                decreaseBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    updateqty(-1);
+                });
+            }
+
+            if (increaseBtn) {
+                increaseBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    updateqty(1);
+                });
+            }
+
+            // Initialize first thumbnail as active
+            const firstThumbnail = document.querySelector('.thumbnail-item');
+            if (firstThumbnail) {
+                firstThumbnail.classList.add('active');
+            }
+        });
+    </script>
 @endsection

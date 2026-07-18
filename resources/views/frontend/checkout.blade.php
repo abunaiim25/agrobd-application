@@ -2,20 +2,20 @@
 
 
 @section('title')
-    AgroBd - Checkout
+    Amarkrishiponno - Checkout
 @endsection
 
 <style>
     .big-hr {
         width: 100% !important;
     }
-
 </style>
 
 
 @section('frontend_content')
     <section id="cart-home " class="mt-5  pt-5 container">
-        <h2 class="font-weight-bold ">Checkout</h2>
+        <h2 class="font-weight-bold ">অর্ডার নিশ্চিত করুন</h2>
+        <p class="text-muted">আপনার ডেলিভারি তথ্য পূরণ করুন এবং নিরাপদে অর্ডার সম্পন্ন করুন</p>
         <hr>
     </section>
 
@@ -58,8 +58,8 @@
                                             <label class="form-control-label">Email: <span
                                                     class="text-danger">*</span></label>
                                             <input class="form-control bg-white " style="color: black" type="text"
-                                                name="shipping_email" placeholder="email"
-                                                value="{{ Auth::user()->email }}" readonly>
+                                                name="shipping_email" placeholder="email" value="{{ Auth::user()->email }}"
+                                                readonly>
                                             @error('shipping_email')
                                                 <strong class="text-danger">{{ $message }}</strong>
                                             @enderror
@@ -106,8 +106,8 @@
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Something write about shopping if any
                                                 (optional):</label>
-                                            <textarea style="color:black" rows="3" name="description"
-                                                class="form-control bg-white " id="exampleInputEmail1" cols="5"></textarea>
+                                            <textarea style="color:black" rows="3" name="description" class="form-control bg-white " id="exampleInputEmail1"
+                                                cols="5"></textarea>
                                         </div>
                                     </div>
 
@@ -171,7 +171,7 @@
                                                 <input type="radio" value="HandCash" name="payment_type"
                                                     style="color: black" required>
                                             </p>
-{{--
+                                            {{--
                                             <p><small> OnlineCash</small>
                                                 <input type="radio" value="OnlinePayment" name="payment_type"
                                                     style="color: black">
@@ -183,7 +183,7 @@
                                             @enderror
                                         </label>
                                     </div>
-                                    
+
                                     <button type="submit" style="border-radius: 4px" class=" button-style">PLACE ORDER
                                         (Hand Cash)</button>
                                     <div class="mx-auto">
